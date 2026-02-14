@@ -17,9 +17,9 @@ const { defineConfig } = require('@playwright/test');
 // ───────────────────────────────────────────────────────────────────
 // LambdaTest Credentials (override via LT_USERNAME / LT_ACCESS_KEY)
 // ───────────────────────────────────────────────────────────────────
-const LT_USERNAME = process.env.LT_USERNAME || 'soumadipbasu333';
+const LT_USERNAME = process.env.LT_USERNAME || '<<Enter Username>>';
 const LT_ACCESS_KEY =
-  process.env.LT_ACCESS_KEY || 'LT_QZxqH16kLKwEFq1X06YXRycoEnLKWnJmfApEPui1JLoUlgs';
+  process.env.LT_ACCESS_KEY || '<<Enter Access Key>>';
 
 // Playwright client version — required for LambdaTest compatibility
 const playwrightVersion = require('@playwright/test/package.json').version;
