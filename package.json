@@ -9,7 +9,10 @@
     "test:firefox": "npx playwright test --project=firefox-macos",
     "test:headed": "npx playwright test --headed",
     "test:report": "npx playwright show-report",
-    "test:debug": "npx playwright test --debug"
+    "test:debug": "npx playwright test --debug",
+    "test:lambdatest": "npx playwright test --config=lambdatest-config.js",
+    "test:lambdatest:chromium": "npx playwright test --config=lambdatest-config.js --project=chromium-windows10",
+    "test:lambdatest:firefox": "npx playwright test --config=lambdatest-config.js --project=firefox-macos"
   },
   "keywords": [],
   "author": "",

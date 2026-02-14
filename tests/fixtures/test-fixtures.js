@@ -21,6 +21,7 @@ const test = base.test.extend({
   /**
    * Override the default page fixture to inject log capture.
    * Logs are automatically attached to the test report after each test.
+   * If running on LambdaTest, test status is also reported to their dashboard.
    */
   page: async ({ page }, use, testInfo) => {
     // Set up log capture before the test runs
@@ -31,6 +32,25 @@ const test = base.test.extend({
 
     // After the test completes, attach logs to the report
     await attachLogs(testInfo, logs);
+
+    // Report test status to LambdaTest dashboard.
+    // On local runs this is a harmless no-op (the evaluate just runs an empty function).
+    const testStatus =
+      testInfo.status === testInfo.expectedStatus ? 'passed' : 'failed';
+    try {
+      await page.evaluate(
+        () => { },
+        `lambdatest_action: ${JSON.stringify({
+          action: 'setTestStatus',
+          arguments: {
+            status: testStatus,
+            remark: `${testInfo.title} — ${testStatus}`,
+          },
+        })}`,
+      );
+    } catch {
+      // Ignore — page may already be closed or not running on LambdaTest
+    }
   },
 });
 

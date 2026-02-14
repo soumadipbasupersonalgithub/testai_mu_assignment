@@ -25,7 +25,11 @@ class SliderPage {
 
   /**
    * Drag the "Default value 15" slider to the specified target value.
-   * Uses incremental keyboard steps for precise control.
+   *
+   * Strategy: Uses JavaScript evaluation to set the slider value and
+   * dispatches an 'input' + 'change' event so the UI updates. This is
+   * reliable on both local and cloud (LambdaTest) environments, avoiding
+   * 80+ ArrowRight keypresses over the network.
    *
    * @param {string} targetValue - The desired slider value (e.g., '95')
    */
@@ -33,26 +37,16 @@ class SliderPage {
     const slider = this.slider15;
     await slider.scrollIntoViewIfNeeded();
 
-    // Focus the slider element
-    await slider.focus();
-
-    // Get the current value and calculate how many steps we need
-    const currentValue = await slider.inputValue();
-    const current = parseInt(currentValue, 10);
-    const target = parseInt(targetValue, 10);
-    const steps = target - current;
-
-    if (steps > 0) {
-      // Move right using ArrowRight key presses
-      for (let i = 0; i < steps; i++) {
-        await this.page.keyboard.press('ArrowRight');
-      }
-    } else if (steps < 0) {
-      // Move left using ArrowLeft key presses
-      for (let i = 0; i < Math.abs(steps); i++) {
-        await this.page.keyboard.press('ArrowLeft');
-      }
-    }
+    // Set the slider value via JavaScript and trigger the change event
+    await slider.evaluate((el, val) => {
+      const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+        HTMLInputElement.prototype,
+        'value',
+      ).set;
+      nativeInputValueSetter.call(el, val);
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }, targetValue);
   }
 
   /**
